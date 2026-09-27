@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Home</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url(blackred.jpg);
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: snow;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-top: 60px;
+      font-size: 36px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 40px;
+      font-weight: normal;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .nav-card {
+      background-color: #1a1a1a;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .nav-card:hover {
+      background-color: red;
+      transform: translateY(-5px);
+    }
+
+    .nav-card a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+      text-align: center;
+    }
+
+    .nav-card a:hover {
+      color: black;
+    }
+
+    .nav-card p {
+      color: #ccc;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .nav-card:hover p {
+      color: black;
+    }
+
+    .active {
+      background-color: red;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .active a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+      text-align: center;
+    }
+
+    .active a:hover {
+      color: black;
+    }
+
+    .active:hover {
+      background-color: red;
+      transform: translateY(-5px);
+    }
+    .active p {
+      color: white;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .active:hover p {
+      color: black;
+    }
+
+
+    .company-info {
+      background-color: rgba(0, 0, 0, 0.7);
+      border: 2px solid red;
+      padding: 20px;
+      border-radius: 15px;
+      text-align: left;
+      max-width: 400px;
+      margin-bottom: 20px;
+      color: white;
+    }
+
+    .company-info h3 {
+      margin-top: 0;
+      font-size: 22px;
+      border-bottom: 1px solid red;
+      padding-bottom: 10px;
+    }
+
+    .company-info p {
+      margin: 8px 0;
+      font-size: 16px;
+    }
+
+    .logout-btn {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.5);
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: darkred;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Welcome, Admin!</h1>
+  <h2>Create internships, control posted internships, view and direct internship applications, and manage your account</h2>
+
+  <div class="nav-container">
+    <div class="active"><a href="company_home.html">HOME</a><p>View your dashboard and navigate</p></div>
+    <div class="nav-card"><a href="create_internship.html">CREATE INTERNSHIPS</a><p>Create internship opportunities</p></div>
+    <div class="nav-card"><a href="posted_internship.html">POSTED INTERNSHIPS</a><p>Stay up-to-date with your posted internships</p></div>
+    <div class="nav-card"><a href="internship_application.html">INTERNSHIP APPLICATIONS</a><p>Supervise and monitor intern applications</p></div>
+    <div class="nav-card"><a href="company_profile.html">PROFILE</a><p>Manage your administrator account</p></div>
+  </div>
+  <br>
+  <br>
+
+  <div class="company-info" id="companyDetails" style="display:none;">
+    <h3>Your Details</h3>
+    <p><strong>ID:</strong> <span id="companyId"></span></p>
+    <p><strong>Company Name:</strong> <span id="companyName"></span></p>
+    <p><strong>Company Email:</strong> <span id="companyEmail"></span></p>
+  </div>
+
+  <button class="logout-btn" id="logoutBtn" onclick="logout()" style="display:none;">Logout</button>
+
+<script>
+  // Fetch company info
+  fetch('/getcompanyinfo')
+    .then(res => {
+      if (!res.ok) throw new Error('Not logged in');
+      return res.json();
+    })
+    .then(data => {
+      document.getElementById('companyId').textContent = data.id;
+      document.getElementById('companyName').textContent = data.name;
+      document.getElementById('companyEmail').textContent = data.email;
+      document.getElementById('companyDetails').style.display = 'block';
+      document.getElementById('logoutBtn').style.display = 'inline-block';
+    if (data.id) {
+        localStorage.setItem('companyId', data.id);
+      }
+      })
+    .catch(err => {
+      alert('Session expired or not logged in.');
+      window.location.href = '/company_login';
+    });
+
+  // Logout function
+  function logout() {
+    window.location.href = '/logout';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>INTERNSHIP APPLICATIONS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="topnav">
+    <div class="nav-links">
+      <a href="company_home.html">HOME</a>
+      <a href="create_internship.html">CREATE INTERNSHIPS</a>
+      <a href="posted_internship.html">POSTED INTERNSHIPS</a>
+      <a href="internship_application.html" class="active">INTERNSHIP APPLICATIONS</a>
+      <a href="company_profile.html">PROFILE</a>
+      <a onclick="logout()">LOGOUT</a>
+    </div>
+  </div>
+
+
+
+  <div class="main-content">
+    <h1 style="text-align:center;">Internship Applications
+      <form id="searchForm" onsubmit="event.preventDefault(); filterApplications();">
+        <input type="text" id="searchInput" placeholder="Search by student name...">
+        <button type="submit">&#128269;</button>
+      </form></h1>
+
+    <div class="internship-display" id="applicationsContainer">
+
+    </div>
+  </div>
+
+  <script>
+    function fetchApplications() {
+      fetch('/get_applications')
+        .then(res => res.json())
+        .then(data => {
+          displayApplications(data);
+        })
+        .catch(err => {
+          console.error('Error fetching applications:', err);
+        });
+    }
+
+    function displayApplications(list) {
+      const container = document.getElementById('applicationsContainer');
+      container.innerHTML = ''; // Clear previous content
+
+      list.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'info-box';
+        card.innerHTML = `
+          <h3>${app.student_name}</h3>
+          <p><strong>Applied for:</strong> ${app.internship_title}</p>
+          <label for="status-${app.id}"><strong>Status:</strong></label>
+          <select id="status-${app.id}" onchange="updateStatus(${app.id}, this.value)">
+            <option value="Pending" ${app.status === 'Pending' ? 'selected' : ''}>Pending</option>
+            <option value="Shortlisted" ${app.status === 'Shortlisted' ? 'selected' : ''}>Shortlisted</option>
+            <option value="Accepted" ${app.status === 'Accepted' ? 'selected' : ''}>Accepted</option>
+            <option value="Rejected" ${app.status === 'Rejected' ? 'selected' : ''}>Rejected</option>
+          </select>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function updateStatus(id, newStatus) {
+      fetch(`/update_application_status/${id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          console.log(`Status updated for application ${id} to ${newStatus}`);
+        } else {
+          alert('Failed to update status');
+        }
+      });
+    }
+
+    function filterApplications() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const cards = document.querySelectorAll('.info-box');
+      cards.forEach(card => {
+        const name = card.querySelector('h3').textContent.toLowerCase();
+        card.style.display = name.includes(searchTerm) ? 'block' : 'none';
+      });
+    }
+
+    function logout() {
+      fetch('/logout')
+        .then(() => window.location.href = '/');
+    }
+
+    window.onload = fetchApplications;
+  </script>
+</body>
+</html>

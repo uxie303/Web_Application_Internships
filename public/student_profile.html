@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Student Profile</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .profile-form {
+      background-color: #1a1a1a;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+      width: 400px;
+      margin: 120px auto;
+      border: 1px solid crimson;
+    }
+
+    .profile-form h2 {
+      text-align: center;
+      color: crimson;
+      margin-bottom: 20px;
+    }
+
+    .profile-form label {
+      display: block;
+      margin-top: 15px;
+      color: #fff;
+    }
+
+    .profile-form input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid crimson;
+      border-radius: 5px;
+      background-color: #111;
+      color: white;
+    }
+
+    .profile-form button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: crimson;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .profile-form button:hover {
+      background-color: #a10000;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <div class="nav-links">
+      <a href="student_home.html">HOME</a>
+      <a href="internships.html">INTERNSHIPS</a>
+      <a href="application.html">APPLICATIONS</a>
+      <a href="student_profile.html" class="active">PROFILE</a>
+      <a onclick="logout()">LOGOUT</a>
+    </div>
+  </div>
+
+  <div class="profile-form">
+    <h2>Student Profile</h2>
+    <form id="studentform">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="course">Course:</label>
+      <input type="text" id="course" name="course" required>
+
+      <label for="stu_password">Password:</label>
+      <input type="password" id="stu_password" name="stu_password" required>
+
+      <button type="submit">Update Profile</button>
+    </form>
+  </div>
+
+  <script>
+    window.onload = () => {
+      fetch('/getstudentinfo')
+        .then(res => res.json())
+        .then(data => {
+          if (data.name) {
+            document.getElementById('name').value = data.name;
+            document.getElementById('email').value = data.email;
+            document.getElementById('course').value = data.course;
+          } else {
+            alert("Not logged in.");
+          }
+        });
+    };
+
+    // Update student info
+    document.getElementById('studentform').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      fetch('/update_student_profile', {
+        method: 'POST',
+        body: new URLSearchParams(formData)
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            alert('Profile updated successfully.');
+            location.reload();
+          } else {
+            alert('Update failed.');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert('An error occurred.');
+        });
+    });
+
+
+    function logout() {
+      window.location.href = '/logout';
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Applied Internships</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      padding: 100px 20px 20px;
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      text-align: center;
+      color: crimson;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    th, td {
+      border: 1px solid crimson;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: crimson;
+      color: white;
+    }
+    button {
+      background-color: crimson;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:disabled {
+      background-color: gray;
+      cursor: default;
+    }
+    button:hover:not(:disabled) {
+      background-color: #a10000;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <div class="nav-links">
+      <a href="student_home.html">HOME</a>
+      <a href="internships.html">INTERNSHIPS</a>
+      <a href="application.html" class="active">APPLICATIONS</a>
+      <a href="student_profile.html">PROFILE</a>
+      <a onclick="logout()">LOGOUT</a>
+    </div>
+  </div>
+  <h1>Applied Internships</h1>
+
+  <table id="internshipsTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Company</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Salary</th>
+        <th>Type</th>
+        <th>Date Posted</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled by JS -->
+    </tbody>
+  </table>
+
+  <script>
+  const studentId = localStorage.getItem('studentId');
+
+  if (!studentId) {
+    alert('You must be logged in to view applications.');
+    window.location.href = 'login.html';
+  }
+
+    const tableBody = document.querySelector('#internshipsTable tbody');
+
+    async function loadInternships() {
+      const res = await fetch('/internships');
+      const data = await res.json();
+
+      const applied = await fetch(`/applied/${studentId}`).then(r => r.json());
+      const appliedIds = new Set(applied.map(app => app.internship_id));
+
+      tableBody.innerHTML = '';
+      data.forEach(i => {
+        if (!appliedIds.has(i.id)) return; // Show only applied internships
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${i.title}</td>
+          <td>${i.company_name}</td>
+          <td>${i.description}</td>
+          <td>${i.location}</td>
+          <td>$${i.salary}</td>
+          <td>${i.type}</td>
+          <td>${new Date(i.date_posted).toISOString().split('T')[0]}</td>
+          <td><button disabled>Applied</button></td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+    function logout() {
+    window.location.href = '/logout';
+  }
+    loadInternships();
+  </script>
+
+</body>
+</html>

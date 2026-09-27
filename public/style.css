@@ -1,0 +1,150 @@
+body {
+  font-family: Arial, sans-serif;
+  background-image: url(blackred.jpg);
+  margin: 0;
+  padding: 0;
+  color: #fff; /* default text color */
+}
+
+
+
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: crimson;
+  padding: 10px 20px;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.topnav a {
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+  margin-right: 20px;
+}
+
+.topnav a.active {
+  background-color: black;
+  color: crimson;
+  padding: 10px 16px;
+  border-radius: 5px;
+}
+
+.topnav a:hover {
+  background-color: #8b0000;
+  color: white;
+  border-radius: 5px;
+}
+
+.topnav .nav-links {
+  display: flex;
+  gap: 10px;
+}
+
+.search-container {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.search-container form {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.search-container input[type="text"] {
+  height: 50px;
+  font-size: 18px;
+  padding: 0 15px;
+  flex-grow: 1;
+  border: 1px solid crimson;
+  border-radius: 5px 0 0 5px;
+  background-color: #111;
+  color: white;
+}
+
+.search-container button {
+  height: 50px;
+  width: 60px;
+  font-size: 20px;
+  background: crimson;
+  border: 1px solid crimson;
+  border-left: none;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  color: white;
+}
+
+.search-container button:hover {
+  background: #a10000;
+}
+
+.main-content {
+  margin-top: 100px;
+}
+
+.main-content h1 {
+  font-size: 36px;
+  color: crimson;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.internship-display {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+  padding: 20px;
+}
+
+.info-box {
+  width: 250px;
+  background-color: #1a1a1a;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(255, 0, 0, 0.3);
+  text-align: left;
+  color: #fff;
+  border: 1px solid crimson;
+}
+
+.info-box h3 {
+  color: crimson;
+}
+
+select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid crimson;
+  background-color: #111;
+  color: white;
+}
+
+select:focus {
+  outline: none;
+  border-color: #ff4d4d;
+}
+
+.center-image {
+  width: 500px;
+  height: auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px crimson;
+}
+
+
+.topnav .nav-links a.active {
+  color: crimson;
+  font-weight: bold;
+  border-bottom: 2px solid crimson;
+}

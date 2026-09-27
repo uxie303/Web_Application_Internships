@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CREATE INTERNSHIP</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+  button {
+    color:black;
+    background-color:red;
+  }
+
+
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <div class="nav-links">
+      <a href="company_home.html">HOME</a>
+      <a href="create_internship.html" class="active">CREATE INTERNSHIPS</a>
+      <a href="posted_internship.html">POSTED INTERNSHIPS</a>
+      <a href="internship_application.html">INTERNSHIP APPLICATIONS</a>
+      <a href="company_profile.html">PROFILE</a>
+      <a onclick="logout()">LOGOUT</a>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <h1>CREATE INTERNSHIP</h1>
+    <div class="info-box" style="width: 100%; max-width: 600px; margin: 0 auto;">
+      <h3>Create New Internship</h3>
+      <form id="internshipForm">
+          <input type="text" name="title" placeholder="Title" required><br><br>
+          <input type="text" name="location" placeholder="Location" required><br><br>
+          <select name="type" required>
+            <option value="">Type</option>
+            <option value="remote">Remote</option>
+            <option value="on-site">On-site</option>
+          </select><br><br>
+          <input type="text" name="description" placeholder="Description" required><br><br>
+          <input type="number" name="salary" placeholder="Salary" required><br><br>
+          <input type="date" id="datePosted" name="date_posted" required><br><br>
+          <button type="submit">ADD INTERNSHIP</button>
+      </form>
+    </div>
+
+
+    <script>
+  document.getElementById('internshipForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(this);
+    const data = new URLSearchParams(formData);
+
+    fetch('/create_internship', {
+      method: 'POST',
+      body: data
+    })
+    .then(response => response.json())
+    .then(result => {
+      if (result.success) {
+        alert(result.message);
+        window.location.href = '/company_home';
+      } else {
+        alert(result.message || 'Failed to create internship');
+      }
+    })
+    .catch(error => {
+      alert('Error posting internship.');
+      console.error('Error:', error);
+    });
+  });
+
+  function logout() {
+    window.location.href = '/logout';
+  }
+  </script>
+
+</body>
+</html>

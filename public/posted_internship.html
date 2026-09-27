@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Manage Posted Internships</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      padding: 100px 20px 20px;
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    h1 {
+      text-align: center;
+      color: crimson;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 40px;
+    }
+    th, td {
+      border: 1px solid crimson;
+      padding: 10px;
+      text-align: left;
+    }
+    th {
+      background-color: crimson;
+      color: white;
+    }
+    button {
+      background-color: crimson;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin-right: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      background-color: #a10000;
+    }
+    #editForm {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid crimson;
+      display: none;
+    }
+    #editForm label {
+      display: block;
+      margin-top: 15px;
+    }
+    #editForm input, #editForm select, #editForm textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      background: #111;
+      border: 1px solid crimson;
+      color: white;
+      border-radius: 5px;
+    }
+    #editForm button {
+      margin-top: 15px;
+      width: 100%;
+    }
+    #cancelEdit {
+      background-color: grey;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topnav">
+    <div class="nav-links">
+      <a href="company_home.html">HOME</a>
+      <a href="create_internship.html">CREATE INTERNSHIPS</a>
+      <a href="posted_internship.html" class="active">POSTED INTERNSHIPS</a>
+      <a href="internship_application.html">INTERNSHIP APPLICATIONS</a>
+      <a href="company_profile.html">PROFILE</a>
+      <a onclick="logout()">LOGOUT</a>
+    </div>
+  </div>
+
+
+  <h1>Manage Your Internships</h1>
+
+  <table id="internshipsTable">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Description</th>
+        <th>Location</th>
+        <th>Salary</th>
+        <th>Type</th>
+        <th>Date Posted</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Filled by JS -->
+    </tbody>
+  </table>
+
+  <div id="editForm">
+    <h2>Edit Internship</h2>
+    <form id="internshipEditForm">
+      <input type="hidden" id="internshipId" />
+      <label for="title">Title:</label>
+      <input type="text" id="title" required />
+
+      <label for="description">Description:</label>
+      <textarea id="description" rows="4" required></textarea>
+
+      <label for="location">Location:</label>
+      <input type="text" id="location" required />
+
+      <label for="salary">Salary:</label>
+      <input type="number" id="salary" step="0.01" required />
+
+      <label for="type">Type:</label>
+      <select id="type" required>
+        <option value="on-site">On-site</option>
+        <option value="remote">Remote</option>
+      </select>
+
+      <label for="date_posted">Date Posted:</label>
+      <input type="date" id="date_posted" required />
+
+      <button type="submit">Save Changes</button>
+      <button type="button" id="cancelEdit">Cancel</button>
+    </form>
+  </div>
+
+  <script>
+    const tableBody = document.querySelector('#internshipsTable tbody');
+    const editForm = document.getElementById('editForm');
+    const form = document.getElementById('internshipEditForm');
+    const cancelEditBtn = document.getElementById('cancelEdit');
+
+    // Load internships on page load
+    function loadInternships() {
+      fetch('/company_internships')
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to load internships');
+          return res.json();
+        })
+        .then(data => {
+          tableBody.innerHTML = '';
+          if (data.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No internships found</td></tr>';
+            return;
+          }
+          data.forEach(internship => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td>${internship.title}</td>
+              <td>${internship.description}</td>
+              <td>${internship.location}</td>
+              <td>${internship.salary}</td>
+              <td>${internship.type}</td>
+              <td>${new Date(internship.date_posted).toISOString().split('T')[0]}</td>
+              <td>
+                <button data-id="${internship.id}" class="editBtn">Edit</button>
+                <button data-id="${internship.id}" class="deleteBtn">Delete</button>
+              </td>
+            `;
+            tableBody.appendChild(tr);
+          });
+          addListeners();
+        })
+        .catch(err => alert(err.message));
+    }
+
+    function addListeners() {
+      document.querySelectorAll('.editBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          fetch(`/internship/${id}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.error) {
+                alert(data.error);
+                return;
+              }
+              // Populate form fields
+              document.getElementById('internshipId').value = data.id;
+              document.getElementById('title').value = data.title;
+              document.getElementById('description').value = data.description;
+              document.getElementById('location').value = data.location;
+              document.getElementById('salary').value = data.salary;
+              document.getElementById('type').value = data.type;
+              document.getElementById('date_posted').value = new Date(data.date_posted).toISOString().split('T')[0];
+              editForm.style.display = 'block';
+              window.scrollTo(0, 0);
+            });
+        });
+      });
+
+      document.querySelectorAll('.deleteBtn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const id = btn.dataset.id;
+          if (confirm('Are you sure you want to delete this internship?')) {
+            fetch(`/internship/${id}`, { method: 'DELETE' })
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  alert('Internship deleted');
+                  loadInternships();
+                } else {
+                  alert('Delete failed');
+                }
+              });
+          }
+        });
+      });
+    }
+
+    // Handle edit form submission
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const id = document.getElementById('internshipId').value;
+      const updatedInternship = {
+        title: document.getElementById('title').value,
+        description: document.getElementById('description').value,
+        location: document.getElementById('location').value,
+        salary: parseFloat(document.getElementById('salary').value),
+        type: document.getElementById('type').value,
+        date_posted: document.getElementById('date_posted').value
+      };
+
+      fetch(`/internship/${id}`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(updatedInternship)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Internship updated');
+          editForm.style.display = 'none';
+          loadInternships();
+        } else {
+          alert('Update failed');
+        }
+      })
+      .catch(() => alert('Error updating internship'));
+    });
+
+    cancelEditBtn.addEventListener('click', () => {
+      editForm.style.display = 'none';
+    });
+
+    loadInternships();
+
+
+
+    function logout() {
+      window.location.href = '/logout';
+    }
+  </script>
+</body>
+</html>

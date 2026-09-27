@@ -1,0 +1,116 @@
+<html>
+<head>
+  <title>Portal</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url(blackred.jpg);
+      background-size: cover;
+      margin: 0;
+      padding: 0;
+      color: snow;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-top: 60px;
+      font-size: 36px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 40px;
+      font-weight: normal;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .nav-card {
+      background-color: #1a1a1a;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .nav-card:hover {
+      background-color: red;
+      transform: translateY(-5px);
+    }
+
+    .nav-card a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+      text-align: center;
+    }
+
+    .nav-card a:hover {
+      color: black;
+    }
+
+    .nav-card p {
+      color: #ccc;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .nav-card:hover p {
+      color: black;
+    }
+
+    .active {
+      background-color: red;
+      padding: 20px 30px;
+      border-radius: 15px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .active a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      display: block;
+      text-align: center;
+    }
+
+    .active a:hover {
+      color: black;
+    }
+
+    .active:hover {
+      background-color: red;
+      transform: translateY(-5px);
+    }
+    .active p {
+      color: #ccc;
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .active:hover p {
+      color: black;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome!</h1>
+  <h2>LOGIN AS:</h2>
+
+  <div class="nav-container">
+    <div class="nav-card"><a href="/company_login.html">COMPANY</a></div>
+    <div class="nav-card"><a href="/student_login.html">STUDENT</a></div>
+  </div>
+</body>
+</html>
